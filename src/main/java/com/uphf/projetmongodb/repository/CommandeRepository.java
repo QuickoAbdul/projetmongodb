@@ -1,4 +1,11 @@
 package com.uphf.projetmongodb.repository;
 
-public interface CommandeRepository {
+import com.uphf.projetmongodb.model.Commande;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
+import java.util.Optional;
+
+public interface CommandeRepository extends MongoRepository<Commande, String> {
+    Optional<Commande> findByNumeroCommande(String numeroCommande);
 }
+

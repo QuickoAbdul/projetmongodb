@@ -1,6 +1,5 @@
 package com.uphf.projetmongodb.controller;
 import com.uphf.projetmongodb.model.Utilisateur;
-import com.uphf.projetmongodb.repository.UtilisateurRepository;
 import com.uphf.projetmongodb.service.UtilisateurService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

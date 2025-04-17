@@ -22,8 +22,8 @@ public class UtilisateurService {
         return utilisateurRepository.findAll();
     }
 
-    public Optional<Utilisateur> getUtilisateurById(String id) {
-        return utilisateurRepository.findById(id);
+    public Optional<Utilisateur> getUtilisateurByEmail(String email) {
+        return utilisateurRepository.findByEmail(email);
     }
 
     public Utilisateur createUtilisateur(Utilisateur utilisateur) {
@@ -34,8 +34,8 @@ public class UtilisateurService {
         return utilisateurRepository.save(utilisateur);
     }
 
-    public Utilisateur updateUtilisateur(String id, Utilisateur utilisateur) {
-        Optional<Utilisateur> existingUtilisateur = utilisateurRepository.findById(id);
+    public Utilisateur updateUtilisateur(String email, Utilisateur utilisateur) {
+        Optional<Utilisateur> existingUtilisateur = utilisateurRepository.findByEmail(email);
 
         if (existingUtilisateur.isPresent()) {
             Utilisateur updatedUtilisateur = existingUtilisateur.get();
@@ -45,17 +45,17 @@ public class UtilisateurService {
             updatedUtilisateur.setPays(utilisateur.getPays());
            return utilisateurRepository.save(updatedUtilisateur);
         } else {
-            throw new IllegalArgumentException("Utilisateur non trouvé avec l'ID : " + id);
+            throw new IllegalArgumentException("Utilisateur non trouvé avec l'email : " + email);
         }
     }
 
-    public void deleteUtilisateur(String id) {
-        Optional<Utilisateur> existingUtilisateur = utilisateurRepository.findById(id);
+    public void deleteUtilisateur(String email) {
+        Optional<Utilisateur> existingUtilisateur = utilisateurRepository.findByEmail(email);
 
         if (existingUtilisateur.isPresent()) {
             utilisateurRepository.delete(existingUtilisateur.get());
         } else {
-            throw new IllegalArgumentException("Utilisateur non trouvé avec l'ID : " + id);
+            throw new IllegalArgumentException("Utilisateur non trouvé avec l'email : " + email);
         }
     }
 }

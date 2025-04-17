@@ -22,8 +22,8 @@ public class ProduitService {
         return produitRepository.findAll();
     }
 
-    public Optional<Produit> getProduitById(String id) {
-        return produitRepository.findById(id);
+    public Optional<Produit> getProduitByName(String nom) {
+        return produitRepository.findByNom(nom);
     }
 
     public Produit createProduit(Produit produit) {
@@ -34,8 +34,8 @@ public class ProduitService {
         return produitRepository.save(produit);
     }
 
-    public Produit updateProduit(String id, Produit produit) {
-        Optional<Produit> existingProduit = produitRepository.findById(id);
+    public Produit updateProduit(String nom, Produit produit) {
+        Optional<Produit> existingProduit = produitRepository.findByNom(nom);
 
         if (existingProduit.isPresent()) {
             Produit updatedProduit = existingProduit.get();
@@ -45,17 +45,17 @@ public class ProduitService {
             updatedProduit.setPays(produit.getPays());
             return produitRepository.save(updatedProduit);
         } else {
-            throw new IllegalArgumentException("Produit non trouvé avec l'ID : " + id);
+            throw new IllegalArgumentException("Produit non trouvé avec le nom : " + nom);
         }
     }
 
-    public void deleteProduit(String id) {
-        Optional<Produit> existingProduit = produitRepository.findById(id);
+    public void deleteProduit(String nom) {
+        Optional<Produit> existingProduit = produitRepository.findByNom(nom);
 
         if (existingProduit.isPresent()) {
             produitRepository.delete(existingProduit.get());
         } else {
-            throw new IllegalArgumentException("Produit non trouvé avec l'ID : " + id);
+            throw new IllegalArgumentException("Produit non trouvé avec le nom : " + nom);
         }
     }
 }

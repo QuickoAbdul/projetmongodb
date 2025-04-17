@@ -22,20 +22,20 @@ public class CommandeService {
         return commandeRepository.findAll();
     }
 
-    public Optional<Commande> getCommandeById(String id) {
-        return commandeRepository.findById(id);
+    public Optional<Commande> getCommandeByNumeroCommande(String numeroCommande) {
+        return commandeRepository.findByNumeroCommande(numeroCommande);
     }
 
     public Commande createCommande(Commande commande) {
         // Check if the order number already exists
         if (commandeRepository.findByNumeroCommande(commande.getNumeroCommande()).isPresent()) {
-            throw new IllegalArgumentException("An order with the same number already exists.");
+            throw new IllegalArgumentException("Numéro de commande déjà existant.");
         }
         return commandeRepository.save(commande);
     }
 
-    public Commande updateCommande(String id, Commande commande) {
-        Commande existingCommande = commandeRepository.findById(id).orElse(null);
+    public Commande updateCommande(String numeroCommande, Commande commande) {
+        Commande existingCommande = commandeRepository.findByNumeroCommande(numeroCommande).orElse(null);
 
         if (existingCommande != null) {
             existingCommande.setNumeroCommande(commande.getNumeroCommande());
@@ -43,17 +43,17 @@ public class CommandeService {
             existingCommande.setEmailUtilisateur(commande.getEmailUtilisateur());
             return commandeRepository.save(existingCommande);
         } else {
-            throw new IllegalArgumentException("Order not found with ID: " + id);
+            throw new IllegalArgumentException("Produit non trouvé avec numéro de commande : " + numeroCommande);
         }
     }
 
-    public void deleteCommande(String id) {
-        Optional<Commande> existingCommande = commandeRepository.findById(id);
+    public void deleteCommande(String numeroCommande) {
+        Optional<Commande> existingCommande = commandeRepository.findByNumeroCommande(numeroCommande);
 
         if (existingCommande.isPresent()) {
             commandeRepository.delete(existingCommande.get());
         } else {
-            throw new IllegalArgumentException("Produit non trouvé avec l'ID : " + id);
+            throw new IllegalArgumentException("Produit non trouvé avec le numéro de commande : " + numeroCommande);
         }
     }
 }

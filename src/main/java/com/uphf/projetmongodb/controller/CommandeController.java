@@ -25,9 +25,9 @@ public class CommandeController {
         return commandeService.getAllCommandes();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Commande> getCommandeById(@PathVariable String id) {
-        return commandeService.getCommandeById(id)
+    @GetMapping("/{numeroCommande}")
+    public ResponseEntity<Commande> getCommandeByNumeroCommande(@PathVariable String numeroCommande) {
+        return commandeService.getCommandeByNumeroCommande(numeroCommande)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -42,20 +42,20 @@ public class CommandeController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Commande> updateCommande(@PathVariable String id, @RequestBody Commande commande) {
+    @PutMapping("/{numeroCommande}")
+    public ResponseEntity<Commande> updateCommande(@PathVariable String numeroCommande, @RequestBody Commande commande) {
         try {
-            Commande updated = commandeService.updateCommande(id, commande);
+            Commande updated = commandeService.updateCommande(numeroCommande, commande);
             return ResponseEntity.status(HttpStatus.OK).body(updated);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCommande(@PathVariable String id) {
+    @DeleteMapping("/{numeroCommande}")
+    public ResponseEntity<Void> deleteCommande(@PathVariable String numeroCommande) {
         try {
-            commandeService.deleteCommande(id);
+            commandeService.deleteCommande(numeroCommande);
             return ResponseEntity.noContent().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();

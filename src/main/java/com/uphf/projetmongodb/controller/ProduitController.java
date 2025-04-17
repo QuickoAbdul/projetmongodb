@@ -25,9 +25,9 @@ public class ProduitController {
         return produitService.getAllProduits();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Produit> getProduitById(@PathVariable String id) {
-        return produitService.getProduitById(id)
+    @GetMapping("/{nom}")
+    public ResponseEntity<Produit> getProduitByNom(@PathVariable String nom) {
+        return produitService.getProduitByName(nom)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -42,20 +42,20 @@ public class ProduitController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Produit> updateProduit(@PathVariable String id, @RequestBody Produit produit) {
+    @PutMapping("/{nom}")
+    public ResponseEntity<Produit> updateProduit(@PathVariable String nom, @RequestBody Produit produit) {
         try {
-            Produit updated = produitService.updateProduit(id, produit);
+            Produit updated = produitService.updateProduit(nom, produit);
             return ResponseEntity.status(HttpStatus.OK).body(updated);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteProduit(@PathVariable String id) {
+    @DeleteMapping("/{nom}")
+    public ResponseEntity<Void> deleteProduit(@PathVariable String nom) {
         try {
-            produitService.deleteProduit(id);
+            produitService.deleteProduit(nom);
             return ResponseEntity.noContent().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();

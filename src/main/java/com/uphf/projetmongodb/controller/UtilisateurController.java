@@ -24,9 +24,9 @@ public class UtilisateurController {
         return utilisateurService.getAllUtilisateurs();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Utilisateur> getUtilisateurById(@PathVariable String id) {
-        return utilisateurService.getUtilisateurById(id)
+    @GetMapping("/{email}")
+    public ResponseEntity<Utilisateur> getUtilisateurByEmail(@PathVariable String email) {
+        return utilisateurService.getUtilisateurByEmail(email)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -41,20 +41,20 @@ public class UtilisateurController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Utilisateur> updateUtilisateur(@PathVariable String id, @RequestBody Utilisateur utilisateur) {
+    @PutMapping("/{email}")
+    public ResponseEntity<Utilisateur> updateUtilisateur(@PathVariable String email, @RequestBody Utilisateur utilisateur) {
         try {
-            Utilisateur updated = utilisateurService.updateUtilisateur(id, utilisateur);
+            Utilisateur updated = utilisateurService.updateUtilisateur(email, utilisateur);
             return ResponseEntity.status(HttpStatus.OK).body(updated);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUtilisateur(@PathVariable String id) {
+    @DeleteMapping("/{email}")
+    public ResponseEntity<Void> deleteUtilisateur(@PathVariable String email) {
         try {
-            utilisateurService.deleteUtilisateur(id);
+            utilisateurService.deleteUtilisateur(email);
             return ResponseEntity.noContent().build();
         } catch (IllegalArgumentException e) {
             return ResponseEntity.notFound().build();

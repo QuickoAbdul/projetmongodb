@@ -3,6 +3,7 @@ package com.uphf.projetmongodb.service;
 import com.uphf.projetmongodb.model.Utilisateur;
 import com.uphf.projetmongodb.repository.UtilisateurRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,6 +13,9 @@ import java.util.Optional;
 public class UtilisateurService {
 
     private final UtilisateurRepository utilisateurRepository;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Autowired
     public UtilisateurService(UtilisateurRepository utilisateurRepository) {
@@ -31,7 +35,8 @@ public class UtilisateurService {
         if (utilisateurRepository.findByEmail(utilisateur.getEmail()).isPresent()) {
             throw new IllegalArgumentException("Un utilisateur avec le même email existe déjà.");
         }
-        return utilisateurRepository.save(utilisateur);
+        ajouterUtilisateur(utilisateur);
+        return utilisateur;
     }
 
     public Utilisateur updateUtilisateur(String email, Utilisateur utilisateur) {
@@ -43,6 +48,7 @@ public class UtilisateurService {
             updatedUtilisateur.setPrenom(utilisateur.getPrenom());
             updatedUtilisateur.setEmail(utilisateur.getEmail());
             updatedUtilisateur.setPays(utilisateur.getPays());
+            ajouterUtilisateur(updatedUtilisateur);
            return utilisateurRepository.save(updatedUtilisateur);
         } else {
             throw new IllegalArgumentException("Utilisateur non trouvé avec l'email : " + email);
@@ -55,7 +61,33 @@ public class UtilisateurService {
         if (existingUtilisateur.isPresent()) {
             utilisateurRepository.delete(existingUtilisateur.get());
         } else {
-            throw new IllegalArgumentException("Utilisateur non trouvé avec l'email : " + email);
+            throw new IllegalArgumentException("Utilisateur non trouvé avec l'email  : " + email);
         }
+    }
+
+    //
+    // Logique MONGODB POUR LES SHARDING
+    //
+
+    public void ajouterUtilisateur(Utilisateur utilisateur) {
+        if ("France".equals(utilisateur.getPays()) || "Germany".equals(utilisateur.getPays())) {
+            saveToEurope(utilisateur);
+        } else if ("China".equals(utilisateur.getPays())) {
+            saveToAsia(utilisateur);
+        } else {
+            saveToGlobal(utilisateur);
+        }
+    }
+
+    private void saveToEurope(Utilisateur utilisateur) {
+        mongoTemplate.save(utilisateur);
+    }
+
+    private void saveToAsia(Utilisateur utilisateur) {
+        mongoTemplate.save(utilisateur);
+    }
+
+    private void saveToGlobal(Utilisateur utilisateur) {
+        mongoTemplate.save(utilisateur);
     }
 }

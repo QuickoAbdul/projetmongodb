@@ -61,4 +61,8 @@ public class UtilisateurController {
         }
     }
 
+    //
+    // Logique pour projet2
+    //
+
 }

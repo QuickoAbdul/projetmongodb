@@ -33,12 +33,12 @@ public class ProduitController {
     }
 
     @PostMapping
-    public ResponseEntity<Produit> createProduit(@RequestBody Produit produit) {
+    public ResponseEntity<?> createProduit(@RequestBody Produit produit) {
         try {
             Produit created = produitService.createProduit(produit);
             return ResponseEntity.status(HttpStatus.CREATED).body(created);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
 
@@ -61,4 +61,9 @@ public class ProduitController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    //
+    // Logique pour projet2
+    //
+    
 }

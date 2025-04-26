@@ -3,6 +3,7 @@ package com.uphf.projetmongodb.service;
 import com.uphf.projetmongodb.model.Produit;
 import com.uphf.projetmongodb.repository.ProduitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,6 +13,10 @@ import java.util.Optional;
 public class ProduitService {
 
     private final ProduitRepository produitRepository;
+
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @Autowired
     public ProduitService(ProduitRepository produitRepository) {
@@ -31,7 +36,8 @@ public class ProduitService {
         if (produitRepository.findByNom(produit.getNom()).isPresent()) {
             throw new IllegalArgumentException("Un produit avec le même nom existe déjà.");
         }
-        return produitRepository.save(produit);
+        ajouterProduit(produit);
+        return produit;
     }
 
     public Produit updateProduit(String nom, Produit produit) {
@@ -43,6 +49,7 @@ public class ProduitService {
             updatedProduit.setPrix(produit.getPrix());
             updatedProduit.setDescription(produit.getDescription());
             updatedProduit.setPays(produit.getPays());
+            ajouterProduit(updatedProduit);
             return produitRepository.save(updatedProduit);
         } else {
             throw new IllegalArgumentException("Produit non trouvé avec le nom : " + nom);
@@ -58,4 +65,25 @@ public class ProduitService {
             throw new IllegalArgumentException("Produit non trouvé avec le nom : " + nom);
         }
     }
+
+    //
+    // Logique MONGODB POUR LES SHARDING
+    //
+
+    public void ajouterProduit(Produit produit) {
+        if ("France".equals(produit.getPays()) || "Germany".equals(produit.getPays())) {
+            saveToEurope(produit);
+        } else if ("China".equals(produit.getPays())) {
+            saveToAsia(produit);
+        } else {
+            saveToGlobal(produit);
+        }
+    }
+
+    private void saveToEurope(Produit produit) { mongoTemplate.save(produit); }
+
+    private void saveToAsia(Produit produit) { mongoTemplate.save(produit); }
+
+    private void saveToGlobal(Produit produit) { mongoTemplate.save(produit); }
+
 }

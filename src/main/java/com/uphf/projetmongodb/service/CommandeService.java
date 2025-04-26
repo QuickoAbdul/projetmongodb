@@ -3,6 +3,8 @@ package com.uphf.projetmongodb.service;
 import com.uphf.projetmongodb.model.Commande;
 import com.uphf.projetmongodb.repository.CommandeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,6 +14,11 @@ import java.util.Optional;
 public class CommandeService {
 
     private final CommandeRepository commandeRepository;
+
+    @Autowired
+    @Qualifier("mongoTemplate")
+    private MongoTemplate generalMongoTemplate;
+
 
     @Autowired
     public CommandeService(CommandeRepository commandeRepository) {
@@ -27,11 +34,11 @@ public class CommandeService {
     }
 
     public Commande createCommande(Commande commande) {
-        // Check if the order number already exists
         if (commandeRepository.findByNumeroCommande(commande.getNumeroCommande()).isPresent()) {
             throw new IllegalArgumentException("Numéro de commande déjà existant.");
         }
-        return commandeRepository.save(commande);
+        ajouterCommande(commande);
+        return commande;
     }
 
     public Commande updateCommande(String numeroCommande, Commande commande) {
@@ -41,6 +48,7 @@ public class CommandeService {
             existingCommande.setNumeroCommande(commande.getNumeroCommande());
             existingCommande.setProduits(commande.getProduits());
             existingCommande.setEmailUtilisateur(commande.getEmailUtilisateur());
+            ajouterCommande(existingCommande);
             return commandeRepository.save(existingCommande);
         } else {
             throw new IllegalArgumentException("Produit non trouvé avec numéro de commande : " + numeroCommande);
@@ -56,4 +64,12 @@ public class CommandeService {
             throw new IllegalArgumentException("Produit non trouvé avec le numéro de commande : " + numeroCommande);
         }
     }
+
+    //
+    // Logique MONGODB POUR LES SHARDING
+    //
+
+    public void ajouterCommande(Commande commande) { saveToGlobal(commande); }
+
+    private void saveToGlobal(Commande commande) { generalMongoTemplate.save(commande); }
 }

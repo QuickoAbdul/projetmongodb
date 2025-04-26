@@ -61,4 +61,8 @@ public class CommandeController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    //
+    // Logique pour Projet2
+    //
 }

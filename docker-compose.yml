@@ -1,92 +1,38 @@
+version: '3.8'
+
 services:
-  # Config Server
-  configsvr:
+  mongo_europe_1:
     image: mongo:6.0
-    container_name: configsvr
-    command: mongod --configsvr --replSet configRS --port 27019 --bind_ip localhost,configsvr
+    container_name: mongo_europe_1
     ports:
-      - 27019:27019
-    networks:
-      - mongonetwork
+      - "27017:27017"
 
-  # Europe Primaire Shard
-  europe1:
+  mongo_europe_2:
     image: mongo:6.0
-    container_name: europe1
-    command: mongod --shardsvr --replSet europeRS --port 27101 --bind_ip localhost,europe1
+    container_name: mongo_europe_2
     ports:
-      - 27101:27101
-    networks:
-      - mongonetwork
+      - "27018:27017"
 
-  # Europe Replication Shard
-  europe2:
+  mongo_asia_1:
     image: mongo:6.0
-    container_name: europe2
-    command: mongod --shardsvr --replSet europeRS --port 27102 --bind_ip localhost,europe2
+    container_name: mongo_asia_1
     ports:
-      - 27102:27102
-    networks:
-      - mongonetwork
+      - "27019:27017"
 
-  # Asie Primaire Shard
-  asia1:
+  mongo_asia_2:
     image: mongo:6.0
-    container_name: asia1
-    command: mongod --shardsvr --replSet asiaRS --port 27201 --bind_ip localhost,asia1
+    container_name: mongo_asia_2
     ports:
-      - 27201:27201
-    networks:
-      - mongonetwork
+      - "27020:27017"
 
-  # Asie Replication Shard
-  asia2:
+  mongo_global_1:
     image: mongo:6.0
-    container_name: asia2
-    command: mongod --shardsvr --replSet asiaRS --port 27202 --bind_ip localhost,asia2
+    container_name: mongo_global_1
     ports:
-      - 27202:27202
-    networks:
-      - mongonetwork
+      - "27021:27017"
 
-  # Global Primaire Shard
-  global1:
+  mongo_global_2:
     image: mongo:6.0
-    container_name: global1
-    command: mongod --shardsvr --replSet globalRS --port 27301 --bind_ip localhost,global1
+    container_name: mongo_global_2
     ports:
-      - 27301:27301
-    networks:
-      - mongonetwork
-
-  # Global Replication Shard
-  global2:
-    image: mongo:6.0
-    container_name: global2
-    command: mongod --shardsvr --replSet globalRS --port 27302 --bind_ip localhost,global2
-    ports:
-      - 27302:27302
-    networks:
-      - mongonetwork
-
-  # Mongo Router (mongosh)
-  mongosDbprojet:
-    image: mongo:6.0
-    container_name: mongosDbprojet
-    command: mongos --configdb configRS/configsvr:27019 --port 27020 --bind_ip localhost,mongosDbprojet
-    ports:
-      - 27020:27020
-    networks:
-      - mongonetwork
-    depends_on:
-      - configsvr
-      - europe1
-      - europe2
-      - asia1
-      - asia2
-      - global1
-      - global2
-
-networks:
-  mongonetwork:
-    driver: bridge
+      - "27022:27017"

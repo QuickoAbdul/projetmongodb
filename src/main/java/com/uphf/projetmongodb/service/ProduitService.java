@@ -1,22 +1,51 @@
 package com.uphf.projetmongodb.service;
 
+import com.uphf.projetmongodb.MongoShardsPersonalizedService;
 import com.uphf.projetmongodb.model.Produit;
 import com.uphf.projetmongodb.repository.ProduitRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProduitService {
 
     private final ProduitRepository produitRepository;
 
+    @Autowired
+    private MongoShardsPersonalizedService mongoShardsPersonalizedService;
 
     @Autowired
-    private MongoTemplate mongoTemplate;
+    @Qualifier("europe1MongoTemplate")
+    private MongoTemplate europe1MongoTemplate;
+
+    @Autowired
+    @Qualifier("europe2MongoTemplate")
+    private MongoTemplate europe2MongoTemplate;
+
+    @Autowired
+    @Qualifier("asia1MongoTemplate")
+    private MongoTemplate asia1MongoTemplate;
+
+    @Autowired
+    @Qualifier("asia2MongoTemplate")
+    private MongoTemplate asia2MongoTemplate;
+
+    @Autowired
+    @Qualifier("global1MongoTemplate")
+    private MongoTemplate global1MongoTemplate;
+
+    @Autowired
+    @Qualifier("global2MongoTemplate")
+    private MongoTemplate global2MongoTemplate;
 
     @Autowired
     public ProduitService(ProduitRepository produitRepository) {
@@ -24,32 +53,68 @@ public class ProduitService {
     }
 
     public List<Produit> getAllProduits() {
-        return produitRepository.findAll();
+        List<Produit> allProduits = new ArrayList<>();
+
+        allProduits.addAll(europe1MongoTemplate.findAll(Produit.class));
+        allProduits.addAll(asia1MongoTemplate.findAll(Produit.class));
+        allProduits.addAll(global1MongoTemplate.findAll(Produit.class));
+
+        return allProduits.stream()
+                .collect(Collectors.toMap(
+                        Produit::getNom,
+                        produit -> produit,
+                        (existing, replacement) -> existing))
+                .values()
+                .stream()
+                .collect(Collectors.toList());
     }
 
+
     public Optional<Produit> getProduitByName(String nom) {
-        return produitRepository.findByNom(nom);
+        Query query = new Query(Criteria.where("nom").is(nom));
+
+        // test dans Europe 1 & 2
+        Produit produit = europe1MongoTemplate.findOne(query, Produit.class);
+        if (produit != null) {
+            return Optional.of(produit);
+        }
+
+        // test dans Asie 1 & 2
+        produit = asia1MongoTemplate.findOne(query, Produit.class);
+        if (produit != null) {
+            return Optional.of(produit);
+        }
+
+        return Optional.empty();
     }
 
     public Produit createProduit(Produit produit) {
-        // Check si le nom existe déjà sinon save
-        if (produitRepository.findByNom(produit.getNom()).isPresent()) {
+        if (getProduitByName(produit.getNom()).isPresent()) {
             throw new IllegalArgumentException("Un produit avec le même nom existe déjà.");
         }
-        ajouterProduit(produit);
-        return produit;
+
+        String region = determineRegion(produit.getPays());
+        mongoShardsPersonalizedService.saveDataToShard(produit, region);
+
+        return produitRepository.save(produit);
     }
 
     public Produit updateProduit(String nom, Produit produit) {
-        Optional<Produit> existingProduit = produitRepository.findByNom(nom);
+        Optional<Produit> existingProduit = getProduitByName(nom);
 
         if (existingProduit.isPresent()) {
             Produit updatedProduit = existingProduit.get();
+
+            String oldRegion = determineRegion(updatedProduit.getPays());
+            mongoShardsPersonalizedService.deleteDataFromShard(updatedProduit, oldRegion);
+
             updatedProduit.setNom(produit.getNom());
             updatedProduit.setPrix(produit.getPrix());
             updatedProduit.setDescription(produit.getDescription());
             updatedProduit.setPays(produit.getPays());
-            ajouterProduit(updatedProduit);
+
+            String newRegion = determineRegion(produit.getPays());
+            mongoShardsPersonalizedService.saveDataToShard(updatedProduit, newRegion);
             return produitRepository.save(updatedProduit);
         } else {
             throw new IllegalArgumentException("Produit non trouvé avec le nom : " + nom);
@@ -57,10 +122,15 @@ public class ProduitService {
     }
 
     public void deleteProduit(String nom) {
-        Optional<Produit> existingProduit = produitRepository.findByNom(nom);
+        Optional<Produit> existingProduit = getProduitByName(nom);
 
         if (existingProduit.isPresent()) {
-            produitRepository.delete(existingProduit.get());
+            Produit produit = existingProduit.get();
+            String region = determineRegion(produit.getPays());
+
+            mongoShardsPersonalizedService.deleteDataFromShard(produit, region);
+
+            produitRepository.delete(produit);
         } else {
             throw new IllegalArgumentException("Produit non trouvé avec le nom : " + nom);
         }
@@ -70,20 +140,14 @@ public class ProduitService {
     // Logique MONGODB POUR LES SHARDING
     //
 
-    public void ajouterProduit(Produit produit) {
-        if ("France".equals(produit.getPays()) || "Germany".equals(produit.getPays())) {
-            saveToEurope(produit);
-        } else if ("China".equals(produit.getPays())) {
-            saveToAsia(produit);
+    private String determineRegion(String pays) {
+        if (List.of("France", "Allemagne, Italie", "Espagne").contains(pays)) {
+            return "europe";
+        } else if (List.of("Chine", "Japon", "Corée").contains(pays)) {
+            return "asia";
         } else {
-            saveToGlobal(produit);
+            return "global";
         }
     }
-
-    private void saveToEurope(Produit produit) { mongoTemplate.save(produit); }
-
-    private void saveToAsia(Produit produit) { mongoTemplate.save(produit); }
-
-    private void saveToGlobal(Produit produit) { mongoTemplate.save(produit); }
 
 }

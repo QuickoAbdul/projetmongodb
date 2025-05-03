@@ -33,7 +33,7 @@ public class CommandeController {
     }
 
     @PostMapping
-    public ResponseEntity<Commande> createCommande(@RequestBody Commande commande) {
+    public ResponseEntity<?> createCommande(@RequestBody Commande commande) {
         try {
             Commande created = commandeService.createCommande(commande);
             return ResponseEntity.status(HttpStatus.CREATED).body(created);

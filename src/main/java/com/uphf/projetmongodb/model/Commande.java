@@ -12,6 +12,7 @@ public class Commande {
 
     @Indexed(unique = true)
     private String numeroCommande;
+
     private String[] produits;
     private String emailUtilisateur;
 
@@ -31,9 +32,7 @@ public class Commande {
     public void setId(String id) {
         this.id = id;
     }
-    public String getNumeroCommande() {
-        return numeroCommande;
-    }
+    public String getNumeroCommande() {return numeroCommande;}
     public void setNumeroCommande(String numeroCommande) {
         this.numeroCommande = numeroCommande;
     }

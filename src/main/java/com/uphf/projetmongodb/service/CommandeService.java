@@ -1,10 +1,13 @@
 package com.uphf.projetmongodb.service;
 
+import com.uphf.projetmongodb.MongoShardsPersonalizedService;
 import com.uphf.projetmongodb.model.Commande;
 import com.uphf.projetmongodb.repository.CommandeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,9 +19,15 @@ public class CommandeService {
     private final CommandeRepository commandeRepository;
 
     @Autowired
-    @Qualifier("mongoTemplate")
-    private MongoTemplate generalMongoTemplate;
+    private MongoShardsPersonalizedService mongoShardsPersonalizedService;
 
+    @Autowired
+    @Qualifier("global1MongoTemplate")
+    private MongoTemplate global1MongoTemplate;
+
+    @Autowired
+    @Qualifier("global2MongoTemplate")
+    private MongoTemplate global2MongoTemplate;
 
     @Autowired
     public CommandeService(CommandeRepository commandeRepository) {
@@ -30,46 +39,81 @@ public class CommandeService {
     }
 
     public Optional<Commande> getCommandeByNumeroCommande(String numeroCommande) {
-        return commandeRepository.findByNumeroCommande(numeroCommande);
+        Query query = new Query(Criteria.where("numeroCommande").is(numeroCommande));
+
+        // Essayer dans Europe 1 & 2
+        Commande commande = global1MongoTemplate.findOne(query, Commande.class);
+        if (commande != null) {
+            return Optional.of(commande);
+        }
+
+        return Optional.empty();
+
     }
 
     public Commande createCommande(Commande commande) {
-        if (commandeRepository.findByNumeroCommande(commande.getNumeroCommande()).isPresent()) {
-            throw new IllegalArgumentException("Numéro de commande déjà existant.");
+        if(getCommandeByNumeroCommande(commande.getNumeroCommande()).isPresent()) {
+            throw new IllegalArgumentException("Produit déjà existant avec le numéro de commande : " + commande.getNumeroCommande());
         }
-        ajouterCommande(commande);
-        return commande;
+
+        String region = "global";
+        mongoShardsPersonalizedService.saveDataToShard(commande, region);
+
+        return commandeRepository.save(commande);
     }
 
     public Commande updateCommande(String numeroCommande, Commande commande) {
-        Commande existingCommande = commandeRepository.findByNumeroCommande(numeroCommande).orElse(null);
+        Optional<Commande> existingCommande = getCommandeByNumeroCommande(numeroCommande);
 
-        if (existingCommande != null) {
-            existingCommande.setNumeroCommande(commande.getNumeroCommande());
-            existingCommande.setProduits(commande.getProduits());
-            existingCommande.setEmailUtilisateur(commande.getEmailUtilisateur());
-            ajouterCommande(existingCommande);
-            return commandeRepository.save(existingCommande);
+        if (existingCommande.isPresent()) {
+            Commande updatedCommande = existingCommande.get();
+
+            String region = "global";
+            mongoShardsPersonalizedService.deleteDataFromShard(commande, region);
+
+            updatedCommande.setNumeroCommande(commande.getNumeroCommande());
+            updatedCommande.setProduits(commande.getProduits());
+            updatedCommande.setEmailUtilisateur(commande.getEmailUtilisateur());
+
+            mongoShardsPersonalizedService.saveDataToShard(updatedCommande, region);
+            return commandeRepository.save(updatedCommande);
         } else {
             throw new IllegalArgumentException("Produit non trouvé avec numéro de commande : " + numeroCommande);
         }
     }
 
     public void deleteCommande(String numeroCommande) {
-        Optional<Commande> existingCommande = commandeRepository.findByNumeroCommande(numeroCommande);
+        Optional<Commande> existingCommande = getCommandeByNumeroCommande(numeroCommande);
 
         if (existingCommande.isPresent()) {
-            commandeRepository.delete(existingCommande.get());
+            String region = "global";
+            Commande commande = existingCommande.get();
+
+            mongoShardsPersonalizedService.deleteDataFromShard(commande, region);
+
+            commandeRepository.delete(commande);
         } else {
             throw new IllegalArgumentException("Produit non trouvé avec le numéro de commande : " + numeroCommande);
         }
     }
+    private String determineRegion(String pays) {
+        if (List.of("France", "Allemagne, Italie", "Espagne").contains(pays)) {
+            return "europe";
+        } else if (List.of("Chine", "Japon", "Corée").contains(pays)) {
+            return "asia";
+        } else {
+            return "global";
+        }
+    }
+}
 
     //
     // Logique MONGODB POUR LES SHARDING
     //
 
-    public void ajouterCommande(Commande commande) { saveToGlobal(commande); }
+/*    public void     saveRegionCommande(Commande commande) { saveToGlobal(commande); }
 
-    private void saveToGlobal(Commande commande) { generalMongoTemplate.save(commande); }
-}
+    private void saveToGlobal(Commande commande) {
+        global1MongoTemplate.save(commande);
+        global2MongoTemplate.save(commande);
+ */

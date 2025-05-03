@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 @Configuration
 public class MongoConfig {
 
-    private static final String MONGOS_URI = "mongodb://localhost:27020";
+    private static final String MONGOS_URI = "mongodb://localhost:27017";
     private static final String DATABASE_NAME = "produitsdb";
 
     @Bean(name = "mongoTemplate")

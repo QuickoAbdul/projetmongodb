@@ -28,24 +28,12 @@ public class ProduitService {
     private MongoTemplate europe1MongoTemplate;
 
     @Autowired
-    @Qualifier("europe2MongoTemplate")
-    private MongoTemplate europe2MongoTemplate;
-
-    @Autowired
     @Qualifier("asia1MongoTemplate")
     private MongoTemplate asia1MongoTemplate;
 
     @Autowired
-    @Qualifier("asia2MongoTemplate")
-    private MongoTemplate asia2MongoTemplate;
-
-    @Autowired
     @Qualifier("global1MongoTemplate")
     private MongoTemplate global1MongoTemplate;
-
-    @Autowired
-    @Qualifier("global2MongoTemplate")
-    private MongoTemplate global2MongoTemplate;
 
     @Autowired
     public ProduitService(ProduitRepository produitRepository) {
@@ -73,13 +61,13 @@ public class ProduitService {
     public Optional<Produit> getProduitByName(String nom) {
         Query query = new Query(Criteria.where("nom").is(nom));
 
-        // test dans Europe 1 & 2
+        // test dans Europe 1
         Produit produit = europe1MongoTemplate.findOne(query, Produit.class);
         if (produit != null) {
             return Optional.of(produit);
         }
 
-        // test dans Asie 1 & 2
+        // test dans Asie 1
         produit = asia1MongoTemplate.findOne(query, Produit.class);
         if (produit != null) {
             return Optional.of(produit);
@@ -106,6 +94,7 @@ public class ProduitService {
             Produit updatedProduit = existingProduit.get();
 
             String oldRegion = determineRegion(updatedProduit.getPays());
+            System.out.println("oldRegion: " + oldRegion);
             mongoShardsPersonalizedService.deleteDataFromShard(updatedProduit, oldRegion);
 
             updatedProduit.setNom(produit.getNom());
@@ -136,14 +125,10 @@ public class ProduitService {
         }
     }
 
-    //
-    // Logique MONGODB POUR LES SHARDING
-    //
-
     private String determineRegion(String pays) {
-        if (List.of("France", "Allemagne, Italie", "Espagne").contains(pays)) {
+        if (List.of("France", "Allemagne", "Italie", "Espagne", "Royaume-Uni").contains(pays)) {
             return "europe";
-        } else if (List.of("Chine", "Japon", "Corée").contains(pays)) {
+        } else if (List.of("Chine", "Japon", "Inde", "Vietnam", "Thaïlande", "Singapour").contains(pays)) {
             return "asia";
         } else {
             return "global";

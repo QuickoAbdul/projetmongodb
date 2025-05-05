@@ -12,7 +12,7 @@ import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 public class MongoTemplateConfig {
 
         @Primary
-        @Bean
+        @Bean(name = "mongoTemplate")
         @Qualifier("europe1MongoTemplate")
         public MongoTemplate europe1MongoTemplate() {
             return new MongoTemplate(

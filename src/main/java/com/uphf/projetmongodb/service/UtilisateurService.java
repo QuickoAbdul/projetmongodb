@@ -28,24 +28,12 @@ public class UtilisateurService {
     private MongoTemplate europe1MongoTemplate;
 
     @Autowired
-    @Qualifier("europe2MongoTemplate")
-    private MongoTemplate europe2MongoTemplate;
-
-    @Autowired
     @Qualifier("asia1MongoTemplate")
     private MongoTemplate asia1MongoTemplate;
 
     @Autowired
-    @Qualifier("asia2MongoTemplate")
-    private MongoTemplate asia2MongoTemplate;
-
-    @Autowired
     @Qualifier("global1MongoTemplate")
     private MongoTemplate global1MongoTemplate;
-
-    @Autowired
-    @Qualifier("global2MongoTemplate")
-    private MongoTemplate global2MongoTemplate;
 
     @Autowired
     public UtilisateurService(UtilisateurRepository utilisateurRepository) {
@@ -134,52 +122,14 @@ public class UtilisateurService {
         }
     }
 
-    //
-    // Logique MONGODB POUR LES SHARDING
-    //
 
     private String determineRegion(String pays) {
-        if (List.of("France", "Allemagne, Italie", "Espagne").contains(pays)) {
+        if (List.of("France", "Allemagne", "Italie", "Espagne", "Royaume-Uni").contains(pays)) {
             return "europe";
-        } else if (List.of("Chine", "Japon", "Corée").contains(pays)) {
+        } else if (List.of("Chine", "Japon", "Inde", "Vietnam", "Thaïlande", "Singapour").contains(pays)) {
             return "asia";
         } else {
             return "global";
         }
     }
-
-    /* public void saveRegionUtilisateur(Utilisateur utilisateur) {
-        String pays = utilisateur.getPays().toLowerCase();
-
-        if (inEurope(pays))  {
-            saveToEurope(utilisateur);
-        } else if (inAsia(pays)) {
-            saveToAsia(utilisateur);
-        } else {
-            saveToGlobal(utilisateur);
-        }
-    }
-
-    private boolean inEurope(String pays) {
-        return List.of("france", "allemagne", "italie", "espagne").contains(pays);
-    }
-
-    private boolean inAsia(String pays) {
-        return List.of("japon", "chine", "inde", "cambodge").contains(pays);
-    }
-
-    private void saveToEurope(Utilisateur utilisateur) {
-        europe1MongoTemplate.save(utilisateur);
-        europe2MongoTemplate.save(utilisateur);
-    }
-
-    private void saveToAsia(Utilisateur utilisateur) {
-        asia1MongoTemplate.save(utilisateur);
-        asia2MongoTemplate.save(utilisateur);
-    }
-
-    private void saveToGlobal(Utilisateur utilisateur) {
-        global1MongoTemplate.save(utilisateur);
-        global2MongoTemplate.save(utilisateur);
-    }*/
 }

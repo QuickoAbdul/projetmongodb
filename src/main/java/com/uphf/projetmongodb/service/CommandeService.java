@@ -26,10 +26,6 @@ public class CommandeService {
     private MongoTemplate global1MongoTemplate;
 
     @Autowired
-    @Qualifier("global2MongoTemplate")
-    private MongoTemplate global2MongoTemplate;
-
-    @Autowired
     public CommandeService(CommandeRepository commandeRepository) {
         this.commandeRepository = commandeRepository;
     }
@@ -41,7 +37,7 @@ public class CommandeService {
     public Optional<Commande> getCommandeByNumeroCommande(String numeroCommande) {
         Query query = new Query(Criteria.where("numeroCommande").is(numeroCommande));
 
-        // Essayer dans Europe 1 & 2
+        // Test dans global 1
         Commande commande = global1MongoTemplate.findOne(query, Commande.class);
         if (commande != null) {
             return Optional.of(commande);
@@ -97,23 +93,12 @@ public class CommandeService {
         }
     }
     private String determineRegion(String pays) {
-        if (List.of("France", "Allemagne, Italie", "Espagne").contains(pays)) {
+        if (List.of("France", "Allemagne", "Italie", "Espagne", "Royaume-Uni").contains(pays)) {
             return "europe";
-        } else if (List.of("Chine", "Japon", "Corée").contains(pays)) {
+        } else if (List.of("Chine", "Japon", "Inde", "Vietnam", "Thaïlande", "Singapour").contains(pays)) {
             return "asia";
         } else {
             return "global";
         }
     }
 }
-
-    //
-    // Logique MONGODB POUR LES SHARDING
-    //
-
-/*    public void     saveRegionCommande(Commande commande) { saveToGlobal(commande); }
-
-    private void saveToGlobal(Commande commande) {
-        global1MongoTemplate.save(commande);
-        global2MongoTemplate.save(commande);
- */

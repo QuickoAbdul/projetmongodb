@@ -88,6 +88,7 @@ public class CommandeService {
             throw new IllegalArgumentException("Produit non trouvé avec le numéro de commande : " + numeroCommande);
         }
     }
+    //Utilise ppas mais laisse pour apres
     private String determineRegion(String pays) {
         if (List.of("France", "Allemagne", "Italie", "Espagne", "Royaume-Uni").contains(pays)) {
             return "europe";

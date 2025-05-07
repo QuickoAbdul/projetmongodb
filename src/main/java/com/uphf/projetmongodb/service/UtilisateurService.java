@@ -79,9 +79,14 @@ public class UtilisateurService {
         }
 
         String region = determineRegion(utilisateur.getPays());
-        mongoShardsPersonalizedService.saveDataToShard(utilisateur, region);
 
-        return utilisateurRepository.save(utilisateur);
+        if (region.isEmpty()) {
+            throw new IllegalArgumentException(" La région pour le pays " + utilisateur.getPays() + " n'est pas définie.");
+        }else{
+            System.out.println("region: " + region);
+            mongoShardsPersonalizedService.saveDataToShard(utilisateur, region);
+            return utilisateurRepository.save(utilisateur);
+        }
     }
 
     public Utilisateur updateUtilisateur(String email, Utilisateur utilisateur) {
@@ -122,14 +127,13 @@ public class UtilisateurService {
         }
     }
 
-
     private String determineRegion(String pays) {
         if (List.of("France", "Allemagne", "Italie", "Espagne", "Royaume-Uni").contains(pays)) {
             return "europe";
         } else if (List.of("Chine", "Japon", "Inde", "Vietnam", "Thaïlande", "Singapour").contains(pays)) {
             return "asia";
         } else {
-            return "global";
+            return "";
         }
     }
 }

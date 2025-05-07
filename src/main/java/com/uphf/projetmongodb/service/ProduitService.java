@@ -80,9 +80,14 @@ public class ProduitService {
         }
 
         String region = determineRegion(produit.getPays());
-        mongoShardsPersonalizedService.saveDataToShard(produit, region);
 
-        return produitRepository.save(produit);
+        if (region.isEmpty()) {
+            throw new IllegalArgumentException(" La région pour le pays " + produit.getPays() + " n'est pas définie.");
+        }else{
+            System.out.println("region: " + region);
+            mongoShardsPersonalizedService.saveDataToShard(produit, region);
+            return produitRepository.save(produit);
+        }
     }
 
     public Produit updateProduit(String nom, Produit produit) {
@@ -92,17 +97,21 @@ public class ProduitService {
             Produit updatedProduit = existingProduit.get();
 
             String oldRegion = determineRegion(updatedProduit.getPays());
-            System.out.println("oldRegion: " + oldRegion);
-            mongoShardsPersonalizedService.deleteDataFromShard(updatedProduit, oldRegion);
-
-            updatedProduit.setNom(produit.getNom());
-            updatedProduit.setPrix(produit.getPrix());
-            updatedProduit.setDescription(produit.getDescription());
-            updatedProduit.setPays(produit.getPays());
-
             String newRegion = determineRegion(produit.getPays());
-            mongoShardsPersonalizedService.saveDataToShard(updatedProduit, newRegion);
-            return produitRepository.save(updatedProduit);
+            if (newRegion.isEmpty()) {
+                throw new IllegalArgumentException("La région pour le pays " + produit.getPays() + " n'est pas définie.");
+            }else {
+                mongoShardsPersonalizedService.deleteDataFromShard(updatedProduit, oldRegion);
+
+                updatedProduit.setNom(produit.getNom());
+                updatedProduit.setPrix(produit.getPrix());
+                updatedProduit.setDescription(produit.getDescription());
+                updatedProduit.setPays(produit.getPays());
+
+                String newPays = determineRegion(produit.getPays());
+                mongoShardsPersonalizedService.saveDataToShard(updatedProduit, newPays);
+                return produitRepository.save(updatedProduit);
+            }
         } else {
             throw new IllegalArgumentException("Produit non trouvé avec le nom : " + nom);
         }
@@ -129,7 +138,7 @@ public class ProduitService {
         } else if (List.of("Chine", "Japon", "Inde", "Vietnam", "Thaïlande", "Singapour").contains(pays)) {
             return "asia";
         } else {
-            return "global";
+            return"";
         }
     }
 

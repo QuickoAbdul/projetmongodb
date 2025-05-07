@@ -63,10 +63,8 @@ public class CommandeService {
 
         if (existingCommande.isPresent()) {
             Commande updatedCommande = existingCommande.get();
-
             String region = "global";
-            mongoShardsPersonalizedService.deleteDataFromShard(commande, region);
-
+            // mongoShardsPersonalizedService.deleteDataFromShard(commande, region);
             updatedCommande.setNumeroCommande(commande.getNumeroCommande());
             updatedCommande.setProduits(commande.getProduits());
             updatedCommande.setEmailUtilisateur(commande.getEmailUtilisateur());

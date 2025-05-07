@@ -37,12 +37,10 @@ public class CommandeService {
     public Optional<Commande> getCommandeByNumeroCommande(String numeroCommande) {
         Query query = new Query(Criteria.where("numeroCommande").is(numeroCommande));
 
-        // Test dans global 1
         Commande commande = global1MongoTemplate.findOne(query, Commande.class);
         if (commande != null) {
             return Optional.of(commande);
         }
-
         return Optional.empty();
 
     }

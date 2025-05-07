@@ -28,16 +28,13 @@ public class Produit {
     }
 
     //Getters and Setters
-
     public String getId() {
         return id;
     }
     public void setId(String id) {
         this.id = id;
     }
-    public String getNom() {
-        return nom;
-    }
+    public String getNom() {return nom;}
     public void setNom(String nom) {
         this.nom = nom;
     }

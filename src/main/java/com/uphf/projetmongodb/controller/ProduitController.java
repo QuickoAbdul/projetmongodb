@@ -61,9 +61,4 @@ public class ProduitController {
             return ResponseEntity.notFound().build();
         }
     }
-
-    //
-    // Logique pour projet2
-    //
-    
 }

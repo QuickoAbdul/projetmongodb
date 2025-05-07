@@ -61,13 +61,11 @@ public class ProduitService {
     public Optional<Produit> getProduitByName(String nom) {
         Query query = new Query(Criteria.where("nom").is(nom));
 
-        // test dans Europe 1
         Produit produit = europe1MongoTemplate.findOne(query, Produit.class);
         if (produit != null) {
             return Optional.of(produit);
         }
 
-        // test dans Asie 1
         produit = asia1MongoTemplate.findOne(query, Produit.class);
         if (produit != null) {
             return Optional.of(produit);

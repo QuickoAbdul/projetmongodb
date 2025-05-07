@@ -60,9 +60,4 @@ public class UtilisateurController {
             return ResponseEntity.notFound().build();
         }
     }
-
-    //
-    // Logique pour projet2
-    //
-
 }

@@ -52,7 +52,7 @@ rs.initiate({
 
 Exécutez les commandes suivantes pour initialiser le replica set Asie :
 ```bash
-docker exec -it europe1 mongosh --port 27201
+docker exec -it asia1 mongosh --port 27201
 ```
 ```bash
 
@@ -184,12 +184,12 @@ sh.status()
 ## 10. API
 Après avoir executer des Posts , connectez vous à vos shards en utilisant : 
 ```
-docker exec -it global1 mongosh --port 27101
-docker exec -it global1 mongosh --port 27102
-docker exec -it global1 mongosh --port 27201
-docker exec -it global1 mongosh --port 27202
+docker exec -it europe1 mongosh --port 27101
+docker exec -it europe2 mongosh --port 27102
+docker exec -it asia1 mongosh --port 27201
+docker exec -it asia2 mongosh --port 27202
 docker exec -it global1 mongosh --port 27301
-docker exec -it global1 mongosh --port 27302
+docker exec -it global2 mongosh --port 27302
 ```
 Afin de voir les documents ajouter executer :
 ```

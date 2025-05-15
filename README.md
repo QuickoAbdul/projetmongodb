@@ -1,5 +1,5 @@
 # Configuration du projet MongoDB 
-
+Shahzad Abdul rahman, Amrani Ayoub, Ndoye Papa Abdoulaye
 ## Prérequis
 
 - Docker

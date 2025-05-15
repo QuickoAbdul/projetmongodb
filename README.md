@@ -77,7 +77,7 @@ rs.status()
 
 ## 10. Resultat
 Vous pouvez maintenant vous connectez vous à vos bdd avec mongoDBCOMPASS :
-(Important : Ajouter " ?directConnection=true " à l'url de connexion, ou importer le fichier 
+(Important : Ajouter " ?directConnection=true " à l'url de connexion, le fait que les base de données tourne sur docker sur différents port, la connection depuis une machine , ou importer le fichier 
 " compass-connections.json ", pour avoir toutes les URLS de connexion )
 <img width="515" alt="image" src="https://github.com/user-attachments/assets/fd3ca0e6-4568-4ed1-b597-df1dc4fc64c7" />
 

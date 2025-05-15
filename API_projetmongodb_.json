@@ -1,0 +1,472 @@
+{
+	"info": {
+		"_postman_id": "c385a363-e514-4710-b703-fe188cc36cdf",
+		"name": "API Produits - Spring Boot MongoDB",
+		"description": "Collection Postman CRUD",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24820168"
+	},
+	"item": [
+		{
+			"name": "Produit CRUD",
+			"item": [
+				{
+					"name": "Create Produit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const json = pm.response.json();",
+									"pm.environment.set(\"produitId\", json.id);",
+									"pm.environment.set(\"produitNom\", json.nom);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"nom\": \"Clavier France\",\n        \"prix\": 89.99,\n        \"description\": \"Clavier mecanique lumineux\",\n        \"pays\": \"France\"\n    }"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/produits",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"produits"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Produit par ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/produits/{{produitNom}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"produits",
+								"{{produitNom}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Produit",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const json = pm.response.json();\r",
+									"pm.environment.set(\"produitNom\", json.nom);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nom\": \"Clavier RGB\",\n    \"prix\": 19.99,\n    \"description\": \"Clavier mecanique lumineux\",\n    \"pays\": \"Senegal\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/produits/{{produitNom}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"produits",
+								"{{produitNom}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Produit",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/produits/{{produitNom}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"produits",
+								"{{produitNom}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Utilisateur CRUD",
+			"item": [
+				{
+					"name": "Create Utilisateur",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"let json = pm.response.json();",
+									"pm.environment.set(\"utilisateurId\", json.id);",
+									"pm.environment.set(\"utilisateurEmail\", json.email);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nom\": \"Doe\",\n  \"prenom\": \"John\",\n  \"email\": \"john.doe@example.com\",\n  \"pays\": \"Chine\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/utilisateurs",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"utilisateurs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get les Utilisateurs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/utilisateurs",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"utilisateurs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Utilisateur par Email",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/utilisateurs/{{utilisateurEmail}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"utilisateurs",
+								"{{utilisateurEmail}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put Utilisateur",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const json = pm.response.json();\r",
+									"pm.environment.set(\"utilisateurEmail\", json.email);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nom\": \"Doe\",\n  \"prenom\": \"Johnny\",\n  \"email\": \"lana.rey@example.com\",\n  \"pays\": \"Chine\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/utilisateurs/{{utilisateurEmail}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"utilisateurs",
+								"{{utilisateurEmail}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete  Utilisateur",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/utilisateurs/{{utilisateurEmail}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"utilisateurs",
+								"{{utilisateurEmail}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Commande CRUD",
+			"item": [
+				{
+					"name": "Create Commande",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const json = pm.response.json();",
+									"pm.environment.set(\"commandeId\", json.id);",
+									"pm.environment.set(\"numeroCommande\", json.numeroCommande);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"numeroCommande\": \"CMD123456\",\n  \"produits\": [\"Produit 1\", \"Produit 2\"],\n  \"emailUtilisateur\": \"john.doe@example.com\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/commandes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"commandes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get les Commandes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/commandes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"commandes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Commande par NumeroCommande",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/commandes/{{numeroCommande}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"commandes",
+								"{{numeroCommande}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Commande",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const json = pm.response.json();\r",
+									"pm.environment.set(\"numeroCommande\", json.numeroCommande);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"numeroCommande\": \"CMD123456\",\n  \"produits\": [\"Produit 1\", \"Produit 22\"],\n  \"emailUtilisateur\": \"john.doe@example.com\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/commandes/{{numeroCommande}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"commandes",
+								"{{numeroCommande}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Commande",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/commandes/{{numeroCommande}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"commandes",
+								"{{numeroCommande}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

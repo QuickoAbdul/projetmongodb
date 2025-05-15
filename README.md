@@ -109,3 +109,5 @@ améliore les performances : les lectures et écritures sont envoyées uniquemen
 respecte la localisation : les données européennes restent sur les serveurs Europe, grâce au code.
 simplifie la maintenance : en gardant une structure distinct claire par région.
 maintient la disponibilité : grâce au failover, si une base de donnée tombe l'autre prend le relais
+
+(Vous pouvez également voir comment fonctionne le sharding automatique proposer par mongoDB en choisisant la branch1 (master), il faut alors à nouveau suivre le ReadMe qui s'y trouve) 

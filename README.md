@@ -1,7 +1,14 @@
 # Configuration du projet MongoDB 
-Shahzad Abdul rahman, Amrani Ayoub, Ndoye Papa Abdoulaye
+
+## Colaborateur
+| [<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="40"/>](https://github.com/Papaabdoulayendoye) | [<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="40"/>](https://github.com/yurri775) | [<img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" width="40"/>](https://github.com/QuickoAbdul) |
+|:--:|:--:|:--:|
+| [Papaabdoulayendoye](https://github.com/Papaabdoulayendoye) | [yurri775](https://github.com/yurri775) | [QuickoAbdul](https://github.com/QuickoAbdul) |
 ## Prérequis
 
+- IDE
+- MongoDBCompass
+- Java 17 =<
 - Docker
 - Docker Compose
 
@@ -115,8 +122,11 @@ Nous avons créer les bases de données en 3 replica sets (europe_rs, asia_rs, g
 Cela nous permet d'avoir une organisation qui :
 
 améliore les performances : les lectures et écritures sont envoyées uniquement vers les instances concernées, donc réduit la charge sur chaque base.
+
 respecte la localisation : les données européennes restent sur les serveurs Europe, grâce au code.
+
 simplifie la maintenance : en gardant une structure distinct claire par région.
+
 maintient la disponibilité : grâce au failover, si une base de donnée tombe l'autre prend le relais
 
 (Vous pouvez également voir comment fonctionne le sharding automatique proposer par mongoDB en choisisant la branch1 (master), il faut alors à nouveau suivre le ReadMe qui s'y trouve) 

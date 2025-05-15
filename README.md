@@ -76,8 +76,13 @@ rs.status()
 ```
 
 ## 10. Resultat
-Vous pouvez maintenant vous connectez vous à vos bdd avec mongoDBCOMPASS :
-(Important : Ajouter " ?directConnection=true " à l'url de connexion, le fait que les base de données tourne sur docker sur différents ports ce qui implique une connexion explicite depuis une machine hôte. Vous pouvez également importer le fichier compass-connections.json  ``` compass-connections.json ``` , pour avoir toutes les URLS de connexion sur mongoDbCompass  )
+Vous pouvez maintenant vous connectez à vos bases de données avec MongoDB Compass.
+Important : comme les instances MongoDB fonctionnent dans des conteneurs Docker avec des Replica Sets, il est nécessaire d’ajouter ``` ?directConnection=true ``` à l’URL de connexion.
+
+Car sur Windows chaque conteneur n’est pas directement accessible comme une machine indépendante, ce qui empêche la résolution automatique des membres du replica set. 
+En ajoutant ```directConnection=true ``` ça permet de cibler uniquement le nœud principal sans chercher à contacter les autres membres du replica set.
+ou
+Vous pouvez également importer le fichier compass-connections.json  ``` compass-connections.json ``` , pour avoir toutes les URLS de connexion sur mongoDbCompass  )
 <img width="515" alt="image" src="https://github.com/user-attachments/assets/fd3ca0e6-4568-4ed1-b597-df1dc4fc64c7" />
 
 ```

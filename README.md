@@ -199,4 +199,14 @@ db.produits.find()
 
 ```
 
+ou 
 
+Vous pouvez maintenant vous connectez vous à vos bdd avec mongoDBCOMPASS :
+(Important : Ajouter " ?directConnection=true " à l'url de connexion, le fait que les base de données tourne sur docker sur différents ports ce qui implique une connexion explicite depuis une machine hôte. Vous pouvez également importer le fichier compass-connections.json  ``` compass-connections.json ``` , pour avoir toutes les URLS de connexion sur mongoDbCompass  )
+<img width="515" alt="image" src="https://github.com/user-attachments/assets/fd3ca0e6-4568-4ed1-b597-df1dc4fc64c7" />
+
+```
+exemple pour asie : 
+
+mongodb://localhost:27021/?directConnection=true"
+```

@@ -105,7 +105,7 @@ Nous avons créer les bases de données en 3 replica sets (europe_rs, asia_rs, g
 
 Cela nous permet d'avoir une organisation qui :
 
-évite la duplication : un même produit ou utilisateur n’est stocké que dans un seul shard, selon son pays.
 améliore les performances : les lectures et écritures sont envoyées uniquement vers les instances concernées, donc réduit la charge sur chaque base.
 respecte la localisation : les données européennes restent sur les serveurs Europe, grâce au code.
 simplifie la maintenance : en gardant une structure distinct claire par région.
+maintient la disponibilité : grâce au failover, si une base de donnée tombe l'autre prend le relais

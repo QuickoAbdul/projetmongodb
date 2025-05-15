@@ -90,8 +90,13 @@ mongodb://localhost:27021/?directConnection=true"
 ## 11. PostMan
 Sur postman importer le fichier " API_projetmongodb_.json "
 Testez les différents Get Put Post et delete
-Fermer un container et effetuer des actions, 
-vous verrez le failover automatique fonctionne bien 
+
+<img width="233" alt="image" src="https://github.com/user-attachments/assets/ea6c65f0-f01c-43fa-8311-b3e792e297af" />
+
+Fermer un container et effetuer des actions, vous verrez le failover automatique fonctionne bien 
+
+<img width="710" alt="image" src="https://github.com/user-attachments/assets/9b6cd2c1-1e2c-40ce-a677-6205a86c49ff" />
+
 
 ## 12. Conclusion 
 

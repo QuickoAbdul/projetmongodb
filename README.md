@@ -76,12 +76,31 @@ rs.status()
 ```
 
 ## 10. Resultat
-Après avoir executer des Posts , connectez vous à vos bdd avec mongoDBCOMPASS :
-(Important : En cas d'erreur essayer d'ajouter "?directConnection=true" à l'url de connexion)
+Vous pouvez maintenant vous connectez vous à vos bdd avec mongoDBCOMPASS :
+(Important : Ajouter " ?directConnection=true " à l'url de connexion, ou importer le fichier 
+" compass-connections.json ", pour avoir toutes les URLS de connexion )
+<img width="515" alt="image" src="https://github.com/user-attachments/assets/fd3ca0e6-4568-4ed1-b597-df1dc4fc64c7" />
+
 ```
 exemple pour asie : 
 
 mongodb://localhost:27021/?directConnection=true"
 ```
 
+## 11. PostMan
+Sur postman importer le fichier " API_projetmongodb_.json "
+Testez les différents Get Put Post et delete
+Fermer un container et effetuer des actions, 
+vous verrez le failover automatique fonctionne bien 
 
+## 12. Conclusion 
+
+Dans ce projet, nous avons alors choisis de faire une répartition personnalisée des données en fonction du pays.
+Nous avons créer les bases de données en 3 replica sets (europe_rs, asia_rs, global_rs) et chaque replica est composé d’un nœud principal et d’un nœud secondaire, permettant d'assurer la haute disponibilité grâce au de failover de MongoDB.
+
+Cela nous permet d'avoir une organisation qui :
+
+évite la duplication : un même produit ou utilisateur n’est stocké que dans un seul shard, selon son pays.
+améliore les performances : les lectures et écritures sont envoyées uniquement vers les instances concernées, donc réduit la charge sur chaque base.
+respecte la localisation : les données européennes restent sur les serveurs Europe, grâce au code.
+simplifie la maintenance : en gardant une structure distinct claire par région.
